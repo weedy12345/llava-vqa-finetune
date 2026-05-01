@@ -32,11 +32,11 @@ model.gradient_checkpointing_enable()
 model.enable_input_require_grads()
 model.print_trainable_parameters()
 
-optimizer = torch.optim.AdamW(model.parameters(), lr=2e-4)
+optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5)
 
 print("开始训练...")
 model.train()
-for epoch in range(3):
+for epoch in range(1):
     total_loss = 0
     for i, item in enumerate(data):
         image = Image.open(item["image"])
@@ -60,7 +60,17 @@ for epoch in range(3):
         prompt = processor.apply_chat_template(conversation, add_generation_prompt=False)
         inputs = processor(images=image, text=prompt, return_tensors="pt").to("cuda")
 
-        outputs = model(**inputs, labels=inputs["input_ids"])
+       
+        labels = inputs["input_ids"].clone()
+        # 找到 [/INST] 的位置，之前的 token 全部设为 -100
+        input_ids = inputs["input_ids"][0]
+        inst_token_id = processor.tokenizer.convert_tokens_to_ids("[/INST]")
+        inst_pos = (input_ids == inst_token_id).nonzero()
+        if len(inst_pos) > 0:
+            labels[0, :inst_pos[-1].item()+1] = -100
+
+        outputs = model(**inputs, labels=labels)	
+        	
         loss = outputs.loss
 
         optimizer.zero_grad()
