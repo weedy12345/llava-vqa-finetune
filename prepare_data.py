@@ -28,10 +28,10 @@ for q in questions["questions"]:
         ]
     })
     
-    if len(samples) >= 1000:
+    if len(samples) >= 5000:
         break
 
-output_path = os.path.join(data_dir, "vqa_1k.json")
+output_path = os.path.join(data_dir, "vqa_5k.json")
 json.dump(samples, open(output_path, "w"))
 print(f"保存了 {len(samples)} 条数据")
 print("样例:", samples[0])

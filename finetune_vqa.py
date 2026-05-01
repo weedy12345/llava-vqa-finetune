@@ -9,7 +9,7 @@ os.environ["HF_ENDPOINT"] = "https://hf-mirror.com"
 os.environ["PYTORCH_CUDA_ALLOC_CONF"] = "expandable_segments:True"
 
 data_dir = "/root/autodl-tmp/vqa_data"
-data = json.load(open(os.path.join(data_dir, "vqa_1k.json")))
+data = json.load(open(os.path.join(data_dir, "vqa_5k.json")))
 
 print("加载模型...")
 processor = LlavaNextProcessor.from_pretrained("llava-hf/llava-v1.6-mistral-7b-hf")
@@ -79,7 +79,7 @@ for epoch in range(1):
 
         total_loss += loss.item()
 
-        if (i + 1) % 100 == 0:
+        if (i + 1) % 500 == 0:
             print(f"Epoch {epoch+1}, Step {i+1}/1000, Loss: {total_loss/(i+1):.4f}")
 
     print(f"Epoch {epoch+1} 完成, 平均 Loss: {total_loss/len(data):.4f}")
