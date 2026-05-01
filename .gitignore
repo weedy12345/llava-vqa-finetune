@@ -1,0 +1,7 @@
+val2014/
+*.zip
+vqa_lora_weights/
+*.json
+*.jpg
+__pycache__/
+*.pyc
